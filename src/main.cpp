@@ -32,7 +32,7 @@ void setup() {
     myDisplay.print("ERRO DE RTC");
     delay(5000);
   }
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   dht.begin();
 
 }
@@ -58,7 +58,7 @@ void loop(){
     }
     else if (displayMode == 1){
       if (isnan(temp)) {
-        sprintf(tempString, "Temp: ERRO");
+        sprintf(tempString, "Temp: ERRO, TEMP");
       } else {
         sprintf(tempString, "Temp: %dC", (int)temp);
       }
@@ -68,7 +68,7 @@ void loop(){
     }
     else {
       if (isnan(hum)) {
-        sprintf(humString, "Umid: ERRO");
+        sprintf(humString, "Umid: ERRO HUMID");
       } else {
         sprintf(humString, "Umid: %d%%", (int)hum);
       }
