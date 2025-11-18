@@ -15,7 +15,7 @@ char timeString[10];
 char tempString[20];
 char humString[20];
 int displayMode = 0;
-int passagem = 40;
+int passagem = 35;
 
 #define MAX_DEVICES 4  // 4 módulos de 8x8
 #define CS_PIN 10
@@ -34,7 +34,7 @@ void setup() {
     delay(5000);
   }
   // FORCE O AJUSTE - COMENTE ESSA LINHA DEPOIS!
-  //rtc.adjust(DateTime(2025, 11, 17, 21, 28, 0));  // Coloque a hora EXATA de agora!
+  //rtc.adjust(DateTime(2025, 11, 18, 19, 30, 0));  // Coloque a hora EXATA de agora!
   dht.begin();
 
 }
@@ -60,11 +60,11 @@ void loop(){
     }
     else if (displayMode == 1){
       if (isnan(temp)) {
-        sprintf(tempString, "Temp: ERRO, TEMP");
+        sprintf(tempString, "Temp: ERRO TEMP");
       } else {
         sprintf(tempString, "Temp: %dC", (int)temp);
       }
-      myDisplay.displayText(tempString, PA_CENTER, passagem, passagem, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+      myDisplay.displayText(tempString, PA_CENTER, passagem, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       displayMode = 2;
 
     }
