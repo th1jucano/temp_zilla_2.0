@@ -15,6 +15,7 @@ char timeString[10];
 char tempString[20];
 char humString[20];
 int displayMode = 0;
+int passagem = 40;
 
 #define MAX_DEVICES 4  // 4 módulos de 8x8
 #define CS_PIN 10
@@ -26,13 +27,14 @@ MD_Parola myDisplay = MD_Parola(MD_MAX72XX::FC16_HW, CS_PIN, MAX_DEVICES);
 void setup() {
   Serial.begin(9600);
   myDisplay.begin();
-  myDisplay.setIntensity(5);  // Brilho 0-15
+  myDisplay.setIntensity(15);  // Brilho 0-15
   myDisplay.displayClear();
   if (!rtc.begin()){
     myDisplay.print("ERRO DE RTC");
     delay(5000);
   }
-  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  // FORCE O AJUSTE - COMENTE ESSA LINHA DEPOIS!
+  //rtc.adjust(DateTime(2025, 11, 17, 21, 28, 0));  // Coloque a hora EXATA de agora!
   dht.begin();
 
 }
@@ -53,7 +55,7 @@ void loop(){
     if (displayMode == 0){
 
       sprintf(timeString, "%02d:%02d", now.hour(), now.minute());
-      myDisplay.displayText(timeString, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+      myDisplay.displayText(timeString, PA_CENTER, passagem, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       displayMode = 1;
     }
     else if (displayMode == 1){
@@ -62,7 +64,7 @@ void loop(){
       } else {
         sprintf(tempString, "Temp: %dC", (int)temp);
       }
-      myDisplay.displayText(tempString, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+      myDisplay.displayText(tempString, PA_CENTER, passagem, passagem, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       displayMode = 2;
 
     }
@@ -72,7 +74,7 @@ void loop(){
       } else {
         sprintf(humString, "Umid: %d%%", (int)hum);
       }
-      myDisplay.displayText(humString, PA_CENTER, 100, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+      myDisplay.displayText(humString, PA_CENTER, passagem, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
       displayMode = 0;
 
     }
