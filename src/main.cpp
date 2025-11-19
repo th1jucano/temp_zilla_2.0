@@ -48,8 +48,8 @@ void loop(){
   static float hum = 50.0;
 
   if (millis() - ultimaLeitura >=10000){
-    temp = dht.readTemperature();
-    hum = dht.readHumidity();
+    temp = dht.readTemperature() * 0.83;
+    hum = dht.readHumidity() * 0.83;
     ultimaLeitura = millis();
     Serial.print(temp);
     Serial.print(" ");
