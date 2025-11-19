@@ -16,6 +16,7 @@ char tempString[20];
 char humString[20];
 int displayMode = 0;
 int passagem = 35;
+unsigned long ultimaLeitura = 0;
 
 #define MAX_DEVICES 4  // 4 módulos de 8x8
 #define CS_PIN 10
@@ -43,12 +44,19 @@ void setup() {
 void loop(){
 
   DateTime now = rtc.now();
+  static float temp = 25.0;  // variável estática mantém valor entre loops
+  static float hum = 50.0;
 
-  float temp = dht.readTemperature();
-  float hum = dht.readHumidity();
-  Serial.print(temp);
-  Serial.print(" ");
-  Serial.println(hum);
+  if (millis() - ultimaLeitura >=10000){
+    temp = dht.readTemperature();
+    hum = dht.readHumidity();
+    ultimaLeitura = millis();
+    Serial.print(temp);
+    Serial.print(" ");
+    Serial.println(hum);
+  }
+
+  
 
   if (myDisplay.displayAnimate()){
 
