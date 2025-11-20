@@ -17,6 +17,7 @@ char humString[20];
 int displayMode = 0;
 int passagem = 35;
 unsigned long ultimaLeitura = 0;
+unsigned long ultimaAnimacao = 0;
 
 #define MAX_DEVICES 4  // 4 módulos de 8x8
 #define CS_PIN 10
@@ -43,24 +44,41 @@ void setup() {
 
 void loop(){
 
+  // Watchdog: Se a animação travar por mais de 30 segundos, reseta
+  if (millis() - ultimaAnimacao > 30000 && ultimaAnimacao > 0) {
+    myDisplay.displayReset();
+    displayMode = 0;
+    ultimaAnimacao = millis();
+  }
+
   DateTime now = rtc.now();
   static float temp = 25.0;  // variável estática mantém valor entre loops
   static float hum = 50.0;
 
   if (millis() - ultimaLeitura >=10000){
-    temp = dht.readTemperature() * 0.83;
+    float tempLida = dht.readTemperature();
     float humLida = dht.readHumidity();
-    hum = humLida * 1.17;  // Aumenta 17% (lê só uma vez)
+    
+    // Só atualiza se a leitura for válida
+    if (!isnan(tempLida) && tempLida > -40 && tempLida < 80) {
+      temp = tempLida * 0.83;
+    }
+    if (!isnan(humLida) && humLida > 0 && humLida <= 100) {
+      hum = humLida * 1.17;
+    }
+    
     ultimaLeitura = millis();
+    Serial.print("T:");
     Serial.print(temp);
-    Serial.print(" ");
+    Serial.print(" H:");
     Serial.println(hum);
   }
 
   
 
   if (myDisplay.displayAnimate()){
-
+    ultimaAnimacao = millis();  // Reseta watchdog
+    
     if (displayMode == 0){
       // Etapa 1: Blinds aparecendo e hora fica visível
       sprintf(timeString, "%02d:%02d", now.hour(), now.minute());
