@@ -49,7 +49,8 @@ void loop(){
 
   if (millis() - ultimaLeitura >=10000){
     temp = dht.readTemperature() * 0.83;
-    hum = dht.readHumidity() + (dht.readHumidity()* 0.17);
+    float humLida = dht.readHumidity();
+    hum = humLida * 1.17;  // Aumenta 17% (lê só uma vez)
     ultimaLeitura = millis();
     Serial.print(temp);
     Serial.print(" ");
@@ -61,9 +62,13 @@ void loop(){
   if (myDisplay.displayAnimate()){
 
     if (displayMode == 0){
-
+      // Etapa 1: Blinds aparecendo e hora fica visível
       sprintf(timeString, "%02d:%02d", now.hour(), now.minute());
-      myDisplay.displayText(timeString, PA_CENTER, passagem, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+      myDisplay.displayText(timeString, PA_CENTER, 100, 2000, PA_BLINDS, PA_PRINT);
+      displayMode = 10;
+    }else if(displayMode == 10){
+      // Etapa 2: Blinds desaparecendo
+      myDisplay.displayText(timeString, PA_CENTER, 100, 0, PA_PRINT, PA_BLINDS);
       displayMode = 1;
     }
     else if (displayMode == 1){
